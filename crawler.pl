@@ -2,8 +2,11 @@ package Duncleosteus::Crawler;
 
 use warnings;
 use strict;
-use utf8;
-#use locale; use POSIX qw(locale_h); setlocale(LC_CTYPE,"ru_RU.UTF-8");
+use Benchmark qw(:all) ;
+
+
+#use utf8;
+use locale; #use POSIX qw(locale_h); setlocale(LC_CTYPE,"ru_RU.UTF-8");
 use Socket::Class;
 
 sub get_urls {
@@ -42,11 +45,11 @@ sub get_urls {
         #print $body."\n";
         #print $_."\n";
 
-        my @words = split q/\s/, $body;
-        #my @words;
-        #while( $body =~ m/(\w+)(?=\s)/ig ){
-        #    print "$1\n";
-        #}
+        #my @words = split q/\s/, $body;
+        my @words;
+        while( $body =~ m/([а-я]+)[^а-я]/ig ){
+            print "$1\n";
+        }
 
         #TODO: сохраняем слова в базу
         foreach (@words) {
@@ -59,6 +62,8 @@ sub get_urls {
 }#get_urls
 
 {
+    my $t0 = Benchmark->new;
+
     my $sock = Socket::Class->new(
         'remote_addr' => 'ruside.ru',
         'remote_port' => 'http',
@@ -80,6 +85,11 @@ sub get_urls {
     #print $res;
 
     $sock->free();
+
+    my $t1 = Benchmark->new;
+    my $td = timediff($t1, $t0);
+    print "the code took:",timestr($td),"\n";
+
 }
 
 1;
