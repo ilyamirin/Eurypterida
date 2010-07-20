@@ -30,20 +30,21 @@ sub get_urls {
         #    print "$_\n";
         #}
 
-        #удаляем формы картинки и тп
-        #$_ = $body;
-        #$_ =~ s/<form[^>]*>.+<\/form>/ /gi;
+        #удаляем формы картинки скрипты формы
+        foreach( qw/ script img form / ) {
+            $body =~ s/<$_[^>]+>[^<]+(?=<\/$_>)/ /gi;
+        }
 
         #убираем теги
-        #$_ = $body;
-        #$_ =~ s/<[^>]+>/ /gi;
+        $body =~ s/<[^>]+>/ /gi;
 
-        #print $body."\n";
+        print $body."\n";
         #print $_."\n";
 
-        my @words = split ' ', $body;
-        foreach( @words ) {
-            print "$_\n";
+        #my @words = split ' ', $body;
+        my @words;
+        while( $body =~ m/([a-z]+)(?=[^a-z])/ig ){
+            print "$1\n";
         }
 
         #TODO: сохраняем слова в базу
@@ -58,7 +59,7 @@ sub get_urls {
 
 {
     my $sock = Socket::Class->new(
-        'remote_addr' => 'www.ruside.ru',
+        'remote_addr' => 'ruside.ru',
         'remote_port' => 'http',
     ) or die Socket::Class->error;
 
