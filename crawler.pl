@@ -1,22 +1,22 @@
-
 package Duncleosteus::Crawler;
 
 use warnings;
 use strict;
 
 use Socket::Class;
-use Regexp;
 
 sub get_urls {
-
-    my $response = @_;
+    my $response = shift;
 
     #получаем тело документа
-    my $re = new Regexp q|<body[^>]*>(.+)</body>|;
+    if ( $$response =~ m|<body[^>]*>(.+)</body>|i ) {
+        my $body = $1;
 
-    if (match $re $response) {
-        print $re->lastmatch;
-    }
+        #выдираем все ссылки
+        while( $body =~ m/href="?([^?^#^>^\s^"]+)/ig ) {
+            print $1."\n";
+        }
+    };
 
 }#get_urls
 
@@ -33,10 +33,12 @@ sub get_urls {
     ) or die $sock->error;
 
     my $res;
-    $sock->read( $res, 1048576 )
-        or die $sock->error;
+    for( my $line = $sock->readline() or die $sock->error; defined $line; ) {
+        $res .= $line;
+        $line = $sock->readline();
+    }
 
-    get_urls($res);
+    get_urls(\$res);
     #print $res;
 
     $sock->free();
