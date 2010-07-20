@@ -3,6 +3,7 @@ package Duncleosteus::Crawler;
 use warnings;
 use strict;
 
+use locale; use POSIX qw(locale_h); setlocale(LC_CTYPE,"ru_RU.UTF-8");
 use Socket::Class;
 
 sub get_urls {
@@ -18,9 +19,39 @@ sub get_urls {
             push @urls, $1;
         }
 
-        foreach (@urls) {
+        #удалаяем ссылки на почту
+        @urls = grep $_ !~ m/mailto/i, @urls;
+
+        #TODO: удаляем ссылки на статику
+
+        #TODO: сохраняем урлы в базу
+        #print "Урлы \n";
+        #foreach (@urls) {
+        #    print "$_\n";
+        #}
+
+        #удаляем формы картинки и тп
+        #$_ = $body;
+        #$_ =~ s/<form[^>]*>.+<\/form>/ /gi;
+
+        #убираем теги
+        #$_ = $body;
+        #$_ =~ s/<[^>]+>/ /gi;
+
+        #print $body."\n";
+        #print $_."\n";
+
+        my @words = split ' ', $body;
+        foreach( @words ) {
             print "$_\n";
         }
+
+        #TODO: сохраняем слова в базу
+        #foreach (@words) {
+        #    print "$_\n";
+        #}
+
+
     };
 
 }#get_urls
@@ -48,7 +79,5 @@ sub get_urls {
 
     $sock->free();
 }
-
-print "END \n";
 
 1;
