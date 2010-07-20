@@ -13,8 +13,13 @@ sub get_urls {
         my $body = $1;
 
         #выдираем все ссылки
+        my @urls;
         while( $body =~ m/href="?([^?^#^>^\s^"]+)/ig ) {
-            print $1."\n";
+            push @urls, $1;
+        }
+
+        foreach (@urls) {
+            print "$_\n";
         }
     };
 
