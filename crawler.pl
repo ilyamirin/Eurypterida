@@ -2,8 +2,8 @@ package Duncleosteus::Crawler;
 
 use warnings;
 use strict;
-
-use locale; use POSIX qw(locale_h); setlocale(LC_CTYPE,"ru_RU.UTF-8");
+use utf8;
+#use locale; use POSIX qw(locale_h); setlocale(LC_CTYPE,"ru_RU.UTF-8");
 use Socket::Class;
 
 sub get_urls {
@@ -30,27 +30,28 @@ sub get_urls {
         #    print "$_\n";
         #}
 
-        #удаляем формы картинки скрипты формы
+        #удаляем картинки скрипты формы
         foreach( qw/ script img form / ) {
             $body =~ s/<$_[^>]+>[^<]+(?=<\/$_>)/ /gi;
         }
 
         #убираем теги
         $body =~ s/<[^>]+>/ /gi;
+        $body =~ s/&[^;]+;/ /gi;
 
-        print $body."\n";
+        #print $body."\n";
         #print $_."\n";
 
-        #my @words = split ' ', $body;
-        my @words;
-        while( $body =~ m/([a-z]+)(?=[^a-z])/ig ){
-            print "$1\n";
-        }
+        my @words = split q/\s/, $body;
+        #my @words;
+        #while( $body =~ m/(\w+)(?=\s)/ig ){
+        #    print "$1\n";
+        #}
 
         #TODO: сохраняем слова в базу
-        #foreach (@words) {
-        #    print "$_\n";
-        #}
+        foreach (@words) {
+            print "$_\n";
+        }
 
 
     };
