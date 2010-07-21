@@ -1,19 +1,26 @@
 package Duncleosteus::Pool;
 use Moose;
 
-#TODO: подключить логгер
 #TODO: подключить базу
-#TODO: вынести в отдельный класс
 #TODO: подключить конфигу
 
 use utf8;
 binmode STDOUT, ":utf8";
 
-use Benchmark qw(:all);
 use Crawler;
 
+use Benchmark qw(:all);
+use Log::Handler Pool => "LOG";;
+
 {
-    my $t0 = Benchmark->new;
+    LOG->add(
+        screen => {
+            log_to     => "STDOUT",
+            maxlevel   => "info",
+            minlevel   => "notice",
+            timeformat => "%Y/%m/%d %H:%M:%S",
+        },
+    );
 
     my $robot = Duncleosteus::Crawler->new(
         agent    => 'duncleosteus/0.1',
@@ -23,14 +30,15 @@ use Crawler;
     );
     $robot->delay(0);
 
-    $robot->load_page_source('http://ruside.ru');
+    my $t0 = Benchmark->new;
 
+    $robot->load_page_source('http://ruside.ru');
     #print $robot->page_source;
 
-    print "Найдено " . $robot->parse_urls . " урлов\n";
+    LOG->info( "Найдено " . $robot->parse_urls . " урлов." );
     #print $_."\n" foreach (@{$robot->urls});
 
-    print "Найдено " . $robot->parse_words . " слов\n";
+    LOG->info( "Найдено " . $robot->parse_words . " слов." );
     # print $_."\n" foreach (@{$robot->words});
 
     my $t1 = Benchmark->new;
