@@ -10,7 +10,7 @@ use Moose;
 
 #use warnings;
 #use strict;
-#use utf8;
+use utf8;
 binmode STDOUT, ":utf8";
 
 use Benchmark qw(:all);
@@ -31,7 +31,13 @@ use Crawler;
 
     #print $robot->page_source;
 
-    print $robot->parse_words."\n";
+    print "Найдено " . $robot->parse_urls . " урлов\n";
+    #foreach (@{$robot->words}) {
+    #    print $_."\n";
+    #}
+
+
+    print "Найдено " . $robot->parse_words . " слов\n";
     #foreach (@{$robot->words}) {
     #    print $_."\n";
     #}
