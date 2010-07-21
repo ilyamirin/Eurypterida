@@ -2,7 +2,9 @@ package Duncleosteus::Pool;
 use Moose;
 
 #TODO: подключить базу
-#TODO: подключить конфигу
+#TODO: починить мерзкий дилей
+#TODO: добавить информативных сообщений о процессе работы
+#TODO: сделать из краулера поток, а из пул пул) посм клаас краулера потока
 
 use utf8;
 binmode STDOUT, ":utf8";
@@ -15,13 +17,6 @@ use Config::JSON;
 
 {
     my $config = Config::JSON->new('config');
-    #$config->set('Pool/agent', 'duncleosteus/0.1');
-    #$config->set('Pool/from', 'mirin@dvc.ru');
-    #$config->set('Pool/timeout', '10');
-    #$config->set('Pool/max_size', '400000');
-    #$config->set('Pool/delay', '0');
-
-    #$config->write;
 
     LOG->add(
         screen => {
@@ -32,19 +27,19 @@ use Config::JSON;
         },
     );
 
-    my $robot = Duncleosteus::Crawler->new( %{ $config->get('Pool') });
-    $robot->delay(0);
+    my $crawler = Duncleosteus::Crawler->new( %{ $config->get('Pool') } );
+    $crawler->delay(0);
 
     my $t0 = Benchmark->new;
 
-    $robot->load_page_source('http://ruside.ru');
-    #print $robot->page_source;
+    $crawler->load_page_source('http://ruside.ru');
+    #print $crawler->page_source;
 
-    LOG->info( "Найдено " . $robot->parse_urls . " урлов." );
-    #print $_."\n" foreach (@{$robot->urls});
+    LOG->info( "Найдено " . $crawler->parse_urls . " урлов." );
+    #print $_."\n" foreach (@{$crawler->urls});
 
-    LOG->info( "Найдено " . $robot->parse_words . " слов." );
-    # print $_."\n" foreach (@{$robot->words});
+    LOG->info( "Найдено " . $crawler->parse_words . " слов." );
+    # print $_."\n" foreach (@{$crawler->words});
 
     my $t1 = Benchmark->new;
     my $td = timediff($t1, $t0);
