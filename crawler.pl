@@ -1,15 +1,20 @@
 #!/usr/bin/perl -w
 package Duncleosteus::Crawler;
 
+#TODO: подключить логгер
+#TODO: подключить базу
+#TODO: вынести в отдельный класс
+
+use Moose;
+
 use warnings;
 use strict;
+
 use utf8;
 binmode STDOUT, ":utf8";
 
 use Benchmark qw(:all) ;
-use HTML::Encoding 'encoding_from_http_message';
 use LWP::RobotUA;
-use LWP::UserAgent;
 
 sub get_urls {
     my ( $self, $response ) = @_;
