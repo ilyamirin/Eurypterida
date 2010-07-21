@@ -9,18 +9,23 @@ binmode STDOUT, ":utf8";
 
 use Benchmark qw(:all) ;
 use HTML::Encoding 'encoding_from_http_message';
-require LWP::RobotUA;
-#require LWP::UserAgent;
+#require LWP::RobotUA;
+use LWP::UserAgent;
 
 use Encode;
 
 sub get_urls {
-    my $response = shift;
+    my ( $self, $response ) = @_;
 
-    #print $$response."\n";
+    #print length $$response."\n";
+    #print  $$response =~ m|<body[^>]*>.+</body>|sgi . "\n";
+    #print ${ $response } =~ m|body|g;
+    #print ${ $response };
+    #print ${ $response };
 
     #получаем тело документа
-    if ( 'fghfgh<body>привет лунатикам</body>' =~ m|<body[^>]*>(.+)</body>| ) {
+    #'fghfgh<body>привет лунатикам</body>'
+    if ( ${ $response } =~ m|(<body[^>]*>.+)|si ) {
         my $body = $1;
         print 'body: '.$body."\n";
 
@@ -83,10 +88,12 @@ sub get_urls {
     my $response = $robot->get('http://ruside.ru');
 
     if ($response->is_success) {
-        get_urls(\$response->decoded_content);
+        #print $response->decoded_content =~ m|body|g;
+        #print  ${$response->content_ref} =~ m/html/g;
+        Duncleosteus::Crawler->get_urls(\$response->decoded_content);
         #get_urls($response->content_ref);
         #print $response->decoded_content;  # or whatever
-        #print $response;
+        #print $response->as_string;
     }
     else {
         die $response->status_line;
