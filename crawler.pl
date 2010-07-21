@@ -1,20 +1,28 @@
+#!/usr/bin/perl -w
 package Duncleosteus::Crawler;
 
 use warnings;
 use strict;
+use utf8;
+binmode STDOUT, ":utf8";
+#use locale; use POSIX qw(locale_h); setlocale(LC_CTYPE,"ru_RU.CP1251");
+
 use Benchmark qw(:all) ;
+use HTML::Encoding 'encoding_from_http_message';
+require LWP::RobotUA;
+#require LWP::UserAgent;
 
-
-#use utf8;
-use locale; #use POSIX qw(locale_h); setlocale(LC_CTYPE,"ru_RU.UTF-8");
-use Socket::Class;
+use Encode;
 
 sub get_urls {
     my $response = shift;
 
+    #print $$response."\n";
+
     #получаем тело документа
-    if ( $$response =~ m|<body[^>]*>(.+)</body>|i ) {
+    if ( 'fghfgh<body>привет лунатикам</body>' =~ m|<body[^>]*>(.+)</body>| ) {
         my $body = $1;
+        print 'body: '.$body."\n";
 
         #выдираем все ссылки
         my @urls;
@@ -28,7 +36,6 @@ sub get_urls {
         #TODO: удаляем ссылки на статику
 
         #TODO: сохраняем урлы в базу
-        #print "Урлы \n";
         #foreach (@urls) {
         #    print "$_\n";
         #}
@@ -40,16 +47,19 @@ sub get_urls {
 
         #убираем теги
         $body =~ s/<[^>]+>/ /gi;
-        $body =~ s/&[^;]+;/ /gi;
+        #убираем спецсимволы
+        #$body =~ s/&[^;]+;/ /gi;
+        #убираем лишние пробелы
+        #$body =~ s/\s{2,}/ /gi;
 
         #print $body."\n";
         #print $_."\n";
 
-        #my @words = split q/\s/, $body;
-        my @words;
-        while( $body =~ m/([а-я]+)[^а-я]/ig ){
-            print "$1\n";
-        }
+        my @words = split q/\W/, $body;
+        #my @words;
+        #while( $body =~ m/(\w+)/ig ) {
+        #    print "$1\n";
+        #}
 
         #TODO: сохраняем слова в базу
         foreach (@words) {
@@ -64,27 +74,28 @@ sub get_urls {
 {
     my $t0 = Benchmark->new;
 
-    my $sock = Socket::Class->new(
-        'remote_addr' => 'ruside.ru',
-        'remote_port' => 'http',
-    ) or die Socket::Class->error;
+    #расширить юзерагента
+    my $robot = LWP::UserAgent->new;
+#LWP::RobotUA->new('duncleosteus/0.1', 'mirin@dvc.ru');
+    $robot->timeout(10);
+    $robot->max_size( 400000 );
 
-    $sock->write(
-        "GET / HTTP/1.0\r\n" .
-        "User-Agent: Not Mozilla\r\n" .
-        "\r\n"
-    ) or die $sock->error;
+    my $response = $robot->get('http://ruside.ru');
 
-    my $res;
-    for( my $line = $sock->readline() or die $sock->error; defined $line; ) {
-        $res .= $line;
-        $line = $sock->readline();
+    if ($response->is_success) {
+        get_urls(\$response->decoded_content);
+        #get_urls($response->content_ref);
+        #print $response->decoded_content;  # or whatever
+        #print $response;
+    }
+    else {
+        die $response->status_line;
     }
 
-    get_urls(\$res);
-    #print $res;
+    #my $enco = encoding_from_http_message($resp);
+    #my $res = decode($enco => $resp->content);
 
-    $sock->free();
+    #print $response;
 
     my $t1 = Benchmark->new;
     my $td = timediff($t1, $t0);
