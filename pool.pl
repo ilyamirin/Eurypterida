@@ -8,34 +8,32 @@ package Duncleosteus::Pool;
 
 use Moose;
 
-use warnings;
-use strict;
-use utf8;
+#use warnings;
+#use strict;
+#use utf8;
 binmode STDOUT, ":utf8";
 
 use Benchmark qw(:all);
-#use Duncleosteus::Crawler;
+use Crawler;
 
 {
     my $t0 = Benchmark->new;
 
-    my $robot = Crawler->new();#'duncleosteus/0.1', 'mirin@dvc.ru');
+    my $robot = Duncleosteus::Crawler->new(
+        agent    => 'duncleosteus/0.1',
+        from     => 'mirin@dvc.ru',
+        timeout  => 10,
+        max_size => 400000,
+    );
     $robot->delay(0);
-    $robot->timeout(10);
 
-    $robot->max_size( 400000 );
+    $robot->load_page_source('http://ruside.ru');
 
-    $robot->load_page_source();
+    #print $robot->page_source;
 
-    print $robot->page_source;
-
-    #my $response = $robot->get('http://ruside.ru');
-
-    #if ($response->is_success) {
-    #    Duncleosteus::Crawler->get_urls(\$response->decoded_content);
-    #}
-    #else {
-    #    die $response->status_line;
+    print $robot->parse_words."\n";
+    #foreach (@{$robot->words}) {
+    #    print $_."\n";
     #}
 
     my $t1 = Benchmark->new;
