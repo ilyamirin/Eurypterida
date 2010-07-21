@@ -1,0 +1,10 @@
+# config-file-type: JSON 1
+
+{
+   "Pool" : {
+      "agent" : "duncleosteus/0.1",
+      "from" : "mirin@dvc.ru",
+      "max_size" : "400000",
+      "timeout" : "10"
+   }
+}

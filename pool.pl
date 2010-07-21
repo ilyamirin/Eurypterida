@@ -10,9 +10,19 @@ binmode STDOUT, ":utf8";
 use Crawler;
 
 use Benchmark qw(:all);
-use Log::Handler Pool => "LOG";;
+use Log::Handler Pool => "LOG";
+use Config::JSON;
 
 {
+    my $config = Config::JSON->new('config');
+    #$config->set('Pool/agent', 'duncleosteus/0.1');
+    #$config->set('Pool/from', 'mirin@dvc.ru');
+    #$config->set('Pool/timeout', '10');
+    #$config->set('Pool/max_size', '400000');
+    #$config->set('Pool/delay', '0');
+
+    #$config->write;
+
     LOG->add(
         screen => {
             log_to     => "STDOUT",
@@ -22,12 +32,7 @@ use Log::Handler Pool => "LOG";;
         },
     );
 
-    my $robot = Duncleosteus::Crawler->new(
-        agent    => 'duncleosteus/0.1',
-        from     => 'mirin@dvc.ru',
-        timeout  => 10,
-        max_size => 400000,
-    );
+    my $robot = Duncleosteus::Crawler->new( %{ $config->get('Pool') });
     $robot->delay(0);
 
     my $t0 = Benchmark->new;
