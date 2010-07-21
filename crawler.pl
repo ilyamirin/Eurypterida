@@ -1,20 +1,17 @@
 #!/usr/bin/perl -w
 package Duncleosteus::Crawler;
 
-#TODO: подключить логгер
-#TODO: подключить базу
-#TODO: вынести в отдельный класс
-
 use Moose;
 
 use warnings;
 use strict;
-
 use utf8;
-binmode STDOUT, ":utf8";
 
-use Benchmark qw(:all) ;
 use LWP::RobotUA;
+
+BEGIN { extends qw/ LWP::RobotUA / };
+
+has page_source => ( is => 'rw', isa => 'Str');
 
 sub get_urls {
     my ( $self, $response ) = @_;
@@ -63,30 +60,18 @@ sub get_urls {
 
 }#get_urls
 
-{
-    my $t0 = Benchmark->new;
+sub load_page_source {
+    my ( $self, $url ) = @_;
 
-    #расширить юзерагента
-    my $robot = LWP::RobotUA->new('duncleosteus/0.1', 'mirin@dvc.ru');
-    $robot->delay(0);
-    $robot->timeout(10);
-
-    $robot->max_size( 400000 );
-
-    my $response = $robot->get('http://ruside.ru');
+    my $response = $robot->get( $url );
 
     if ($response->is_success) {
-        Duncleosteus::Crawler->get_urls(\$response->decoded_content);
+        $self->page_source(\$response->decoded_content);
     }
     else {
         die $response->status_line;
     }
 
-    my $t1 = Benchmark->new;
-    my $td = timediff($t1, $t0);
-
-    print "the code took:",timestr($td),"\n";
-
-}
+}#load_page_source
 
 1;
