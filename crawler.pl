@@ -17,22 +17,15 @@ use Encode;
 sub get_urls {
     my ( $self, $response ) = @_;
 
-    #print length $$response."\n";
-    #print  $$response =~ m|<body[^>]*>.+</body>|sgi . "\n";
-    #print ${ $response } =~ m|body|g;
-    #print ${ $response };
-    #print ${ $response };
-
     #получаем тело документа
-    #'fghfgh<body>привет лунатикам</body>'
-    if ( ${ $response } =~ m|(<body[^>]*>.+)|si ) {
+    if ( ${ $response } =~ m|(<body[^>]*>(.+)</body>)|si ) {
         my $body = $1;
-        print 'body: '.$body."\n";
 
         #выдираем все ссылки
         my @urls;
         while( $body =~ m/href="?([^?^#^>^\s^"]+)/ig ) {
             push @urls, $1;
+            #print $1 . "\n";
         }
 
         #удалаяем ссылки на почту
@@ -53,24 +46,16 @@ sub get_urls {
         #убираем теги
         $body =~ s/<[^>]+>/ /gi;
         #убираем спецсимволы
-        #$body =~ s/&[^;]+;/ /gi;
+        $body =~ s/&[^;]+;/ /gi;
         #убираем лишние пробелы
-        #$body =~ s/\s{2,}/ /gi;
+        $body =~ s/\W+/ /gi;
 
-        #print $body."\n";
-        #print $_."\n";
-
-        my @words = split q/\W/, $body;
-        #my @words;
-        #while( $body =~ m/(\w+)/ig ) {
-        #    print "$1\n";
-        #}
+        my @words = split q/\s/, $body;
 
         #TODO: сохраняем слова в базу
         foreach (@words) {
-            print "$_\n";
+           print "$_\n";
         }
-
 
     };
 
@@ -88,24 +73,15 @@ sub get_urls {
     my $response = $robot->get('http://ruside.ru');
 
     if ($response->is_success) {
-        #print $response->decoded_content =~ m|body|g;
-        #print  ${$response->content_ref} =~ m/html/g;
         Duncleosteus::Crawler->get_urls(\$response->decoded_content);
-        #get_urls($response->content_ref);
-        #print $response->decoded_content;  # or whatever
-        #print $response->as_string;
     }
     else {
         die $response->status_line;
     }
 
-    #my $enco = encoding_from_http_message($resp);
-    #my $res = decode($enco => $resp->content);
-
-    #print $response;
-
     my $t1 = Benchmark->new;
     my $td = timediff($t1, $t0);
+
     print "the code took:",timestr($td),"\n";
 
 }
