@@ -1,4 +1,4 @@
-package Duncleosteus::Crawler;
+package Dunkleosteus::Crawler;
 use Moose;
 
 BEGIN { extends qw/ LWP::RobotUA / };

@@ -1,10 +1,11 @@
-package Duncleosteus::Pool;
+package Dunkleosteus::Pool;
 use Moose;
 
 #TODO: подключить базу
 #TODO: починить мерзкий дилей
 #TODO: добавить информативных сообщений о процессе работы
 #TODO: сделать из краулера поток, а из пул пул) посм клаас краулера потока
+#TODO: заюзать фишки муза
 
 use utf8;
 binmode STDOUT, ":utf8";
@@ -27,7 +28,7 @@ use Config::JSON;
         },
     );
 
-    my $crawler = Duncleosteus::Crawler->new( %{ $config->get('Pool') } );
+    my $crawler = Dunkleosteus::Crawler->new( %{ $config->get('Pool') } );
     $crawler->delay(0);
 
     my $t0 = Benchmark->new;
