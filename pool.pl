@@ -1,15 +1,11 @@
-#!/usr/bin/perl -w
 package Duncleosteus::Pool;
+use Moose;
 
 #TODO: подключить логгер
 #TODO: подключить базу
 #TODO: вынести в отдельный класс
 #TODO: подключить конфигу
 
-use Moose;
-
-#use warnings;
-#use strict;
 use utf8;
 binmode STDOUT, ":utf8";
 
@@ -32,15 +28,10 @@ use Crawler;
     #print $robot->page_source;
 
     print "Найдено " . $robot->parse_urls . " урлов\n";
-    #foreach (@{$robot->words}) {
-    #    print $_."\n";
-    #}
-
+    #print $_."\n" foreach (@{$robot->urls});
 
     print "Найдено " . $robot->parse_words . " слов\n";
-    #foreach (@{$robot->words}) {
-    #    print $_."\n";
-    #}
+    # print $_."\n" foreach (@{$robot->words});
 
     my $t1 = Benchmark->new;
     my $td = timediff($t1, $t0);

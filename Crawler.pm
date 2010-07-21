@@ -1,12 +1,5 @@
-#!/usr/bin/perl -w
 package Duncleosteus::Crawler;
 use Moose;
-
-#use warnings;
-#use strict;
-#use utf8;
-
-use LWP::RobotUA;
 
 BEGIN { extends qw/ LWP::RobotUA / };
 
