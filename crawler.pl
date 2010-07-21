@@ -5,14 +5,11 @@ use warnings;
 use strict;
 use utf8;
 binmode STDOUT, ":utf8";
-#use locale; use POSIX qw(locale_h); setlocale(LC_CTYPE,"ru_RU.CP1251");
 
 use Benchmark qw(:all) ;
 use HTML::Encoding 'encoding_from_http_message';
-#require LWP::RobotUA;
+use LWP::RobotUA;
 use LWP::UserAgent;
-
-use Encode;
 
 sub get_urls {
     my ( $self, $response ) = @_;
@@ -65,9 +62,10 @@ sub get_urls {
     my $t0 = Benchmark->new;
 
     #расширить юзерагента
-    my $robot = LWP::UserAgent->new;
-#LWP::RobotUA->new('duncleosteus/0.1', 'mirin@dvc.ru');
+    my $robot = LWP::RobotUA->new('duncleosteus/0.1', 'mirin@dvc.ru');
+    $robot->delay(0);
     $robot->timeout(10);
+
     $robot->max_size( 400000 );
 
     my $response = $robot->get('http://ruside.ru');
