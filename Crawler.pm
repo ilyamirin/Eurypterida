@@ -68,6 +68,7 @@ sub load_page_source {
     my $response = $self->get( $url );
 
     if ($response->is_success) {
+        $self->logger->info( 'Ищу на странице ' . $url );
         $self->page_source(\$response->decoded_content);
     }
     else {
