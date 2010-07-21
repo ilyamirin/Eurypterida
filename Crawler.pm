@@ -1,6 +1,8 @@
 package Dunkleosteus::Crawler;
 use Moose;
 
+use utf8;
+
 BEGIN { extends qw/ LWP::RobotUA / };
 
 has page_source => ( is => 'rw', isa => 'ScalarRef');
@@ -8,6 +10,8 @@ has page_source => ( is => 'rw', isa => 'ScalarRef');
 has urls => ( is => 'rw', isa => 'ArrayRef');
 
 has words => ( is => 'rw', isa => 'ArrayRef');
+
+has logger => ( is => 'rw', isa => 'Object');
 
 sub parse_urls {
     my $self = shift ;
@@ -25,7 +29,7 @@ sub parse_urls {
 
     $self->urls(\@urls);
 
-    return @{ $self->urls() };
+    $self->logger->info( "Найдено " . @{ $self->urls() } . " урлов." );
 
 }#sub parse_urls
 
@@ -54,7 +58,7 @@ sub parse_words {
 
     }#if
 
-    return @{$self->words()};
+    $self->logger->info( "Найдено " . @{ $self->words() } . " слов." );
 
 }#sub parse_words
 

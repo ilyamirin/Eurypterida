@@ -13,13 +13,13 @@ binmode STDOUT, ":utf8";
 use Crawler;
 
 use Benchmark qw(:all);
-use Log::Handler Pool => "LOG";
+use Log::Handler;
 use Config::JSON;
 
 {
-    my $config = Config::JSON->new('config');
+    my $log = Log::Handler->new();
 
-    LOG->add(
+    $log->add(
         screen => {
             log_to     => "STDOUT",
             maxlevel   => "info",
@@ -28,19 +28,17 @@ use Config::JSON;
         },
     );
 
+    my $config = Config::JSON->new('config');
+
     my $crawler = Dunkleosteus::Crawler->new( %{ $config->get('Pool') } );
     $crawler->delay(0);
+    $crawler->logger($log);
 
     my $t0 = Benchmark->new;
 
     $crawler->load_page_source('http://ruside.ru');
-    #print $crawler->page_source;
-
-    LOG->info( "Найдено " . $crawler->parse_urls . " урлов." );
-    #print $_."\n" foreach (@{$crawler->urls});
-
-    LOG->info( "Найдено " . $crawler->parse_words . " слов." );
-    # print $_."\n" foreach (@{$crawler->words});
+    $crawler->parse_urls;
+    $crawler->parse_words;
 
     my $t1 = Benchmark->new;
     my $td = timediff($t1, $t0);
