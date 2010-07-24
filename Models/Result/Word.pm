@@ -1,4 +1,4 @@
-package Dunkleosteus::Models::Word;
+package Dunkleosteus::Models::Result::Word;
 use Moose;
 use CLASS;
 
@@ -12,8 +12,8 @@ CLASS->set_primary_key( 'id' );
 
 #CLASS->has_many('positions' => 'MyDatabase::Main::Result::Cd');
 
-#package Dunkleosteus::Models::Word::ResultSet;
+package Dunkleosteus::Models::Word::ResultSet;
 
-#use parent 'DBIx::Class::ResultSet';
+use parent 'DBIx::Class::ResultSet';
 
 1;
