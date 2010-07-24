@@ -1,4 +1,4 @@
-package Dunkleosteus::Crawler;
+package Crawler;
 use Moose;
 
 use utf8;

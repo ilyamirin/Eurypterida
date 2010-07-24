@@ -36,22 +36,22 @@ use DBI;
 
     my $config = Config::JSON->new('config');
 
-    my $crawler = Dunkleosteus::Crawler->new( %{ $config->get('Pool') } );
+    my $crawler = Crawler->new( %{ $config->get('Pool') } );
     $crawler->delay(0);
     $crawler->logger($log);
 
     my $t0 = Benchmark->new;
 
-    my $db = Dunkleosteus::Schema->connect('dbi:SQLite:dbname=dunkleosteus.db');
+    my $db = Schema->connect('dbi:SQLite:dbname=dunkleosteus.db');
     #my $db = Dunkleosteus::Models::DB->
     #    connect('DBI:mysql:host=localhost;database=dunckleosteus;mysql_enable_utf8=1');
 
     #print $db->storage->connected."\n";
     print $db->class('Word')."\n";
-    #$db->populate('Word', [
-    # [qw/ root /],
-    # [qw/ имба шляпа /],
-    #]);
+    $db->populate('Word', [
+        [ qw/ root / ],
+        ( ['имба'], ['шляпа'], ['термометр'] ) ,
+    ]);
 
     #$db->do("create table users (user_name text);");
     #print $db->resultset('Dunkleosteus::Models::Word')->count ."\n";
