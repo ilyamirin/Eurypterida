@@ -14,13 +14,10 @@ binmode STDOUT, ":utf8";
 
 use Crawler;
 use Schema;
-#use Models::Word;
 
 use Benchmark qw(:all);
 use Log::Handler;
 use Config::JSON;
-
-use DBI;
 
 {
     my $log = Log::Handler->new();
@@ -43,18 +40,9 @@ use DBI;
     my $t0 = Benchmark->new;
 
     my $db = Schema->connect('dbi:SQLite:dbname=dunkleosteus.db');
-    #my $db = Dunkleosteus::Models::DB->
-    #    connect('DBI:mysql:host=localhost;database=dunckleosteus;mysql_enable_utf8=1');
 
-    #print $db->storage->connected."\n";
-    print $db->class('Word')."\n";
-    $db->populate('Word', [
-        [ qw/ root / ],
-        ( ['имба'], ['шляпа'], ['термометр'] ) ,
-    ]);
-
-    #$db->do("create table users (user_name text);");
-    #print $db->resultset('Dunkleosteus::Models::Word')->count ."\n";
+    #$db->resultset('Position')->create( { word => 3 } );
+    #print $db->resultset('Word')->count ."\n";
 
     #$crawler->load_page_source('http://ruside.ru');
     #$crawler->parse_urls;

@@ -1,9 +1,7 @@
 package Schema;
-#use Moose;
+use Moose;
 
-#BEGIN { extends qw/ DBIx::Class::Schema / };
-
-use base qw/ DBIx::Class::Schema /;
+BEGIN { extends qw/ DBIx::Class::Schema / };
 
 __PACKAGE__->load_classes( qw/ Word Position/, {});
 
