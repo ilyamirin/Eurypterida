@@ -21,7 +21,7 @@ sub store_results {
     my $words = $self->db->resultset('Schema::Word');
 
     foreach( @{ $self->words } ) {
-        $words->update_or_create({ root => $_ });
+        $words->update_or_create({ root => lc $_ });
     }
 
 }
