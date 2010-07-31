@@ -13,6 +13,19 @@ has words => ( is => 'rw', isa => 'ArrayRef');
 
 has logger => ( is => 'rw', isa => 'Object');
 
+has db => ( is => 'rw', isa => 'Object');
+
+sub store_results {
+    my $self = shift;
+
+    my $words = $self->db->resultset('Schema::Word');
+
+    foreach( @{ $self->words } ) {
+        $words->update_or_create({ root => $_ });
+    }
+
+}
+
 sub parse_urls {
     my $self = shift ;
 

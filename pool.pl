@@ -33,20 +33,20 @@ use Config::JSON;
 
     my $config = Config::JSON->new('config');
 
+    my $db = Schema->connect('dbi:SQLite:dbname=base.sqlite');
+
     my $crawler = Crawler->new( %{ $config->get('Pool') } );
     $crawler->delay(0);
     $crawler->logger($log);
+    $crawler->db($db);
 
     my $t0 = Benchmark->new;
 
-    my $db = Schema->connect('dbi:SQLite:dbname=dunkleosteus.db');
+    $crawler->load_page_source('http://ruside.ru');
+    $crawler->parse_urls;
+    $crawler->parse_words;
 
-    #$db->resultset('Position')->create( { word => 3 } );
-    #print $db->resultset('Word')->count ."\n";
-
-    #$crawler->load_page_source('http://ruside.ru');
-    #$crawler->parse_urls;
-    #$crawler->parse_words;
+    $crawler->store_results;
 
     my $t1 = Benchmark->new;
     my $td = timediff($t1, $t0);

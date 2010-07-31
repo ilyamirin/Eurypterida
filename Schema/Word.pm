@@ -10,6 +10,6 @@ CLASS->add_columns(qw/ id root /);
 
 CLASS->set_primary_key( 'id' );
 
-CLASS->has_many('positions' => 'Schema::Position');
+#CLASS->has_many('positions' => 'Schema::Position');
 
 1;
